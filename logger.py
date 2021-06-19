@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Logger module which handles logging data while still printing it to stdout.
 
-This module is intended to replace standard "print" statements by logging the contents of a print statement to a file to keep a record of it while also printing it to stdout. The log is intended to also track the serial of any plot being generated for reference to metadata about plot.
+This module is intended to provide wrappers to functions such as print, plt.showfig, and more, by providing additional functionality such as: saving figures with time-encoding serials along with saving print (now log) messages to a file with the aforementioned serial. This facilitates tying any metadata to its corresponding plot, and saving of test figures for any further review.
 
 **Author: Jonathan Delgado**
 
