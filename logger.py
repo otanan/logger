@@ -10,6 +10,8 @@ from pathlib import Path
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
+# Conversion of functions source to string
+import dill.source
 
 
 #------------- Initialization -------------#
@@ -29,6 +31,14 @@ SERIAL = None
 #------------- End init -------------#
 
 
+######################## Serialization ########################
+
+
+# Getter
+def get_serial(): return SERIAL
+
+
+# Constructor
 def _serialize():
     """ Generates a unique serial code, useful for file saving to prevent 
         overwriting and conflicts. First portion of the serial code is the date and time requested (ymdHMS), with up to millisecond implementation. This makes the serial code sortable. Useful in creating identifiers for files.
@@ -41,6 +51,7 @@ def _serialize():
     return datetime.now().strftime('%y%m%d%H%M%S%f')[:-3]
 
 
+# Setter
 def gen_serial():
     """ Requests for a new serial to be generated, updates the log's serial,
         updates the log, then returns the serial.
@@ -64,6 +75,25 @@ def gen_serial():
     return SERIAL
 
 
+######################## Miscellaneous ########################
+
+
+def _get_func_source(func):
+    """ Gets the source code of the function.
+        
+        Args:
+            func (function): the function of interest.
+    
+        Returns:
+            (str): the source code.
+    
+    """
+    return dill.source.getsource(func).strip()
+
+
+######################## Logging ########################
+
+
 def log(message):
     """ Saves the message to a log using the active serial. Then prints the
         message to stdout.
@@ -72,11 +102,11 @@ def log(message):
             message (str): the message to be saved and printed.
     
         Returns:
-            (None): none
+            (int): the serial
     
     """
-    logsilent(message)
     print(message)
+    return logsilent(message)
 
 
 def logsilent(message):
@@ -86,17 +116,40 @@ def logsilent(message):
             message (str): the message to be saved.
     
         Returns:
-            (None): none
+            (int): the serial
     
     """
     # This is the first log being done.
     if SERIAL == None: gen_serial()
 
+    # Check if this is a function trying to be logged
+    if callable(message):
+        # Convert the function's source code to a string
+        message = _get_func_source(message)
+
     with open(LOG_PATH, 'a') as f:
         # Write the serial for this log
-        f.write(message)
+        f.write(str(message))
         # Padding between metadata entries
         f.write('\n')
+
+    return get_serial()
+
+
+def logfunc(func):
+    """ Logs a function's source code.
+        
+        Args:
+            func (function): the function whose source code is to be logged.
+    
+        Returns:
+            (None): none
+    
+    """
+    log(_get_func_source(func))
+
+
+######################## Plots ########################
 
 
 def showfig():
@@ -117,7 +170,6 @@ def showfig():
 
 
 #------------- Entry code -------------#
-
 
 def main():
     ### Testing ###
