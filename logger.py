@@ -65,12 +65,7 @@ def gen_serial():
 
     # Every time the serial is updated, it's considered a new entry for the log
     with open(LOG_PATH, 'a') as f:
-        # Padding between entries
-        # Make sure the file isn't empty for this
-        if os.path.getsize(LOG_PATH):
-            f.write('\n\n')
-        # Write the serial for this log
-        f.write(SERIAL + '\n')
+        _write_header(f)
 
     return SERIAL
 
@@ -91,6 +86,34 @@ def _get_func_source(func):
     return dill.source.getsource(func).strip()
 
 
+def _write_header(f):
+    """ Prints a header to separate log entries.
+        
+        Args:
+            f (file): the file object (the log) to write to.
+    
+        Returns:
+            (None): none
+    
+    """
+    # A banner to surround the serial
+    banner = 80 * '='
+
+    # Padding between entries
+    # Make sure the file isn't empty for this
+    if os.path.getsize(LOG_PATH):
+        f.write('\n\n')
+
+    ### Header writing ###
+
+    # Write the serial in the header for this log
+    f.write(banner + '\n')
+    f.write(SERIAL + '\n')
+    # Print the date and time
+    f.write(datetime.now().strftime("%m/%d/%Y %H:%M:%S") + '\n')
+    f.write(banner + '\n')
+    
+
 ######################## Logging ########################
 
 
@@ -102,11 +125,11 @@ def log(message):
             message (str): the message to be saved and printed.
     
         Returns:
-            (int): the serial
+            (None): none
     
     """
+    logsilent(message)
     print(message)
-    return logsilent(message)
 
 
 def logsilent(message):
@@ -116,7 +139,7 @@ def logsilent(message):
             message (str): the message to be saved.
     
         Returns:
-            (int): the serial
+            (None): none
     
     """
     # This is the first log being done.
@@ -132,8 +155,6 @@ def logsilent(message):
         f.write(str(message))
         # Padding between metadata entries
         f.write('\n')
-
-    return get_serial()
 
 
 def logfunc(func):
@@ -170,6 +191,7 @@ def showfig():
 
 
 #------------- Entry code -------------#
+
 
 def main():
     ### Testing ###
