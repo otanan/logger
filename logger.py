@@ -117,12 +117,12 @@ def _write_header(f):
 ######################## Logging ########################
 
 
-def log(message):
+def log(message=''):
     """ Saves the message to a log using the active serial. Then prints the
         message to stdout.
         
-        Args:
-            message (str): the message to be saved and printed.
+        Kwargs:
+            message (str): the message to be saved and printed. Defaults to an empty string to use an empty log call to print a line for padding.
     
         Returns:
             (None): none
@@ -132,7 +132,7 @@ def log(message):
     print(message)
 
 
-def logsilent(message):
+def logsilent(message=''):
     """ Same as log, but does not print to stdout.
         
         Args:
