@@ -173,6 +173,21 @@ def logfunc(func):
 ######################## Plots ########################
 
 
+def logfig():
+    """ Logs the figure without showing it.
+        
+        Returns:
+            (None): none
+    
+    """
+    # If this is the first log being done.
+    if SERIAL == None: gen_serial()
+    
+    plot_fname = PLOT_PATH / f'{SERIAL}.pdf'
+    # Save the figure
+    plt.savefig(plot_fname, bbox_inches='tight')    
+
+
 def showfig():
     """ Wrapper to save figure to temp folder with current serial and show it.
     
@@ -180,14 +195,9 @@ def showfig():
             (None): none
     
     """
-    # This is the first log being done.
-    if SERIAL == None: gen_serial()
-    
-    plot_fname = PLOT_PATH / f'{SERIAL}.pdf'
-    # Save the figure
-    plt.savefig(plot_fname, bbox_inches='tight')
+    # Log the figure, then show it.
+    logfig()
     plt.show()
-
 
 
 #------------- Entry code -------------#
